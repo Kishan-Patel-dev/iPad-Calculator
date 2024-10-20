@@ -9,6 +9,7 @@ ipad-be/app/calculator/__pycache__
 
 #frontend env
 ipad-fe/.env.local
+ipad-fe/src/vite-env.d.ts
 
 #backend env
 ipad-be/.env
