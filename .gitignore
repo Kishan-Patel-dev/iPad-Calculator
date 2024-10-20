@@ -1,0 +1,15 @@
+#Node modules
+ipad-fe/node_modules
+
+
+#Python
+ipad-be/__pycache__
+ipad-be/app/calculator/__pycache__
+
+
+#frontend env
+ipad-fe/.env.local
+
+#backend env
+ipad-be/.env
+ipad-be/venv
