@@ -7,7 +7,6 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 
-
 interface Response {
     expr: string;
     result: string;
@@ -45,15 +44,14 @@ export default function Home() {
                 window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
             }, 0);
         }
-    }, [latexExpression])
+    }, [latexExpression]);
 
-    
     useEffect(() => {
         if (result) {
             renderLatexToCanvas(result.expression, result.answer);
         }
-    }, [result])
-    
+    }, [result]);
+
     useEffect(() => {
         const canvas = canvasRef.current;
 
@@ -64,21 +62,20 @@ export default function Home() {
                 canvas.height = window.innerHeight - canvas.offsetTop;
                 ctx.lineCap = 'round';
                 ctx.lineWidth = 3;
-                // Set initial background color to black
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         }
 
         const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/config/TeX-MML-AM_CHTML.js'
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/config/TeX-MML-AM_CHTML.js';
         script.async = true;
         document.head.appendChild(script);
 
         script.onload = () => {
             window.MathJax.Hub.Config({
                 tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
-            })
+            });
         };
 
         return () => {
@@ -87,29 +84,24 @@ export default function Home() {
     }, []);
 
     const renderLatexToCanvas = (expression: string, answer: string) => {
-        // Assuming expression and answer are plain text, no need to wrap in LaTeX
-        const latex = `${expression} = ${answer}`;  // Plain text formatting
-    
+        const latex = `${expression} = ${answer}`;
         setLatexExpression([...latexExpression, latex]);
-    
+
         const canvas = canvasRef.current;
         if (canvas) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                // Clear the canvas but retain the black background
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'black'; // Ensure the background is black after clearing
+                ctx.fillStyle = 'black'; 
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         }
     };
-    
 
     const sendData = async () => {
         const canvas = canvasRef.current;
 
         if (canvas) {
-            console.log('Sending data...', `${import.meta.env.VITE_API_URL}/calculate`);
             const response = await axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_API_URL}/calculate`,
@@ -125,17 +117,17 @@ export default function Home() {
                     setDictOfVars({
                         ...dictOfVars,
                         [data.expr]: data.result
-                    })
+                    });
                 }
-            })
+            });
 
             const ctx = canvas.getContext('2d');
-            const imageData = ctx!.getImageData(0,0,canvas.width, canvas.height);
+            const imageData = ctx!.getImageData(0, 0, canvas.width, canvas.height);
             let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
 
-            for (let y =0; y < canvas.height; y++) {
-                for(let x = 0; x < canvas.width; x++) {
-                    if(imageData.data[(y*canvas.width+x)*4+3] > 0){
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    if (imageData.data[(y * canvas.width + x) * 4 + 3] > 0) {
                         if (x < minX) minX = x;
                         if (x > maxX) maxX = x;
                         if (y < minY) minY = y;
@@ -144,10 +136,10 @@ export default function Home() {
                 }
             }
 
-            const centerX = (minX + maxX) /2;
-            const centerY = (minY + maxY) /2;
+            const centerX = (minX + maxX) / 2;
+            const centerY = (minY + maxY) / 2;
 
-            setLatexPosition({x: centerX, y: centerY});
+            setLatexPosition({ x: centerX, y: centerY });
 
             resp.data.forEach((data: Response) => {
                 setTimeout(() => {
@@ -165,9 +157,8 @@ export default function Home() {
         if (canvas) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                // Reset background color to black
                 ctx.fillStyle = 'black';
-                ctx.fillRect(0, 0, canvas.width, canvas.height); // Reset drawing area
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         }
     };
@@ -196,7 +187,7 @@ export default function Home() {
         if (canvas) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                ctx.strokeStyle = color; // Set the drawing color
+                ctx.strokeStyle = color; 
                 ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
                 ctx.stroke();
             }
@@ -205,7 +196,7 @@ export default function Home() {
 
     return (
         <div className="relative h-screen">
-            <div className="grid grid-cols-3 gap-2 z-20 relative"> {/* Changed absolute to relative */}
+            <div className="grid grid-cols-3 gap-2 z-20 relative">
                 <Button
                     onClick={() => setReset(true)}
                     className='bg-black text-white'
@@ -214,15 +205,15 @@ export default function Home() {
                 >
                     Reset
                 </Button>
-                <Group>
-                    {SWATCHES.map((swatchColor: string) => (
-                        <ColorSwatch
-                            key={swatchColor}
-                            color={swatchColor}
-                            onClick={() => setColor(swatchColor)}
-                        />
-                    ))}
-                </Group>
+                <div className="flex items-center space-x-2">
+                    {/* Color Picker */}
+                    <input
+                        type="color"
+                        value={color}
+                        onChange={(e) => setColor(e.target.value)}
+                        className="border-none"
+                    />
+                </div>
                 <Button
                     onClick={sendData}
                     className='bg-black text-white'
@@ -240,7 +231,7 @@ export default function Home() {
                 onMouseOut={stopDrawing}
                 onMouseUp={stopDrawing}
                 onMouseMove={draw}
-                style={{ cursor: 'crosshair' }} // Added cursor style for better UX
+                style={{ cursor: 'crosshair' }}
             />
             {latexExpression && latexExpression.map((latex, index) => (
                 <Draggable
@@ -249,8 +240,8 @@ export default function Home() {
                     onStop={(e, data) => setLatexPosition({ x: data.x, y: data.y })}
                 >
                     <div
-                        className='absolute text-white' // Make sure the text color is white
-                        style={{ color: 'white' }}  // Ensure LaTeX text color is white
+                        className='absolute text-white'
+                        style={{ color: 'white' }}
                     >
                         <div className='latex-content'>{latex}</div>
                     </div>
