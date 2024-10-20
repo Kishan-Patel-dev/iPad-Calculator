@@ -4,6 +4,9 @@ import { ColorSwatch, Group } from "@mantine/core";
 import { Button } from "@/components/ui/button";
 import Draggable from 'react-draggable';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLinkedin, faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
+
 
 interface Response {
     expr: string;
@@ -253,7 +256,22 @@ export default function Home() {
                     </div>
                 </Draggable>
             ))}
-
+            <footer className="fixed bottom-0 left-0 right-0 bg-black text-white p-4">
+                <div className="flex justify-between items-center">
+                    <p>Developed by Kishan Patel</p>
+                    <div className="flex space-x-4">
+                        <a href="https://www.linkedin.com/in/kishan-patel-dev/" target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon icon={faLinkedin} size="lg" />
+                        </a>
+                        <a href="https://x.com/KishanPatel_dev" target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon icon={faTwitter} size="lg" />
+                        </a>
+                        <a href="https://github.com/Kishan-Patel-dev" target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon icon={faGithub} size="lg" />
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }
